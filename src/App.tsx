@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Download, ImagePlus, RefreshCw, ShieldCheck, Sparkles, UploadCloud, Wand2 } from 'lucide-react';
+import { ArrowRight, Camera, Check, Download, ImagePlus, RefreshCw, UploadCloud } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import { createMockIdPhoto } from './photoMock';
 import { defaultPhotoSpecId, getPhotoSpec, photoSpecs, type PhotoSpecId } from './photoSpecs';
@@ -116,15 +116,12 @@ function App() {
 
   return (
     <main className="app-shell">
-      <div className="orb orb-a" />
-      <div className="orb orb-b" />
-
       <nav className="topbar">
         <div className="brand">
-          <div className="brand-mark"><Sparkles size={20} /></div>
+          <div className="brand-mark"><Camera size={20} /></div>
           <span>轻证照</span>
         </div>
-        <div className="trust-pill"><ShieldCheck size={16} /> 本地预览 · Mock 生成</div>
+        <div className="trust-pill"><Check size={14} /> 标准证件照规格</div>
       </nav>
 
       <AnimatePresence mode="wait">
@@ -132,18 +129,18 @@ function App() {
           <Screen key="welcome">
             <section className="hero-grid">
               <div className="hero-copy">
-                <motion.div className="eyebrow" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-                  标准规格 · 前端预览
+                <motion.div className="eyebrow" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
+                  1寸 · 2寸 · 小二寸
                 </motion.div>
-                <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-                  选择规格，生成一张清爽的证件照
+                <motion.h1 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 }}>
+                  在线制作标准证件照
                 </motion.h1>
-                <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-                  先选择 1寸、2寸或小二寸规格，再上传照片并选择常用底色。当前版本使用前端 mock 跑通制作体验，后续可接入真实处理接口。
+                <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}>
+                  选择国家通用证件照规格，上传正面半身照，一键替换红白蓝底色。本地处理，图片不上传服务器。
                 </motion.p>
                 <motion.div className="hero-actions" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
                   <button className="primary-button" onClick={() => setStep('upload')}>
-                    开始制作证件照 <Wand2 size={18} />
+                    开始制作证件照 <ArrowRight size={18} />
                   </button>
                   <span className="microcopy">支持 1寸 / 2寸 / 小二寸 · JPG / PNG / WebP</span>
                 </motion.div>
@@ -228,7 +225,7 @@ function App() {
                     ))}
                   </div>
                   <button className="primary-button wide" onClick={generatePhoto} disabled={!originalUrl}>
-                    生成证件照 <Sparkles size={18} />
+                    生成证件照 <ArrowRight size={18} />
                   </button>
                 </div>
               </div>
@@ -296,10 +293,10 @@ function App() {
 function Screen({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -16 }}
-      transition={{ duration: 0.45, ease: 'easeOut' }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.28, ease: 'easeOut' }}
     >
       {children}
     </motion.div>
