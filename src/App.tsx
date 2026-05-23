@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Download, ImagePlus, RefreshCw, ShieldCheck, Sparkles, UploadCloud, Wand2 } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
@@ -31,6 +31,18 @@ function App() {
   );
   const selectedSpec = useMemo(() => getPhotoSpec(selectedSpecId), [selectedSpecId]);
 
+  useEffect(() => {
+    return () => {
+      if (originalUrl) URL.revokeObjectURL(originalUrl);
+    };
+  }, [originalUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (resultUrl) URL.revokeObjectURL(resultUrl);
+    };
+  }, [resultUrl]);
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
 
@@ -41,6 +53,11 @@ function App() {
 
     if (!file.type.startsWith('image/')) {
       setError('文件格式不正确，请选择图片文件');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setError('照片文件不能超过 10MB');
       return;
     }
 
@@ -69,9 +86,15 @@ function App() {
 
     setStep('processing');
     await new Promise((resolve) => window.setTimeout(resolve, 1800));
-    const transformedUrl = await createMockIdPhoto(originalUrl, selectedBackground.value, selectedSpec);
-    setResultUrl(transformedUrl);
-    setStep('result');
+
+    try {
+      const transformedUrl = await createMockIdPhoto(originalUrl, selectedBackground.value, selectedSpec);
+      setResultUrl(transformedUrl);
+      setStep('result');
+    } catch {
+      setError('照片处理失败，请重新选择一张清晰的图片');
+      setStep('upload');
+    }
   };
 
   const resetFlow = () => {

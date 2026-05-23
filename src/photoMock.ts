@@ -25,7 +25,8 @@ export async function createMockIdPhoto(
 
   ctx.save();
   ctx.beginPath();
-  ctx.roundRect(
+  addRoundedRectPath(
+    ctx,
     safeInset,
     safeInset,
     spec.width - safeInset * 2,
@@ -42,6 +43,32 @@ export async function createMockIdPhoto(
   ctx.strokeRect(4, 4, spec.width - 8, spec.height - 8);
 
   return canvas.toDataURL('image/png');
+}
+
+function addRoundedRectPath(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+) {
+  const roundRect = ctx.roundRect;
+  if (typeof roundRect === 'function') {
+    roundRect.call(ctx, x, y, width, height, radius);
+    return;
+  }
+
+  const r = Math.min(radius, width / 2, height / 2);
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + width - r, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+  ctx.lineTo(x + width, y + height - r);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+  ctx.lineTo(x + r, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
 }
 
 function loadImage(src: string) {
